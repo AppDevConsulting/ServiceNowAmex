@@ -1,4 +1,4 @@
-name: ServiceNow Deployment
+name: ServiceNowAmex
 
 on:
   push:
