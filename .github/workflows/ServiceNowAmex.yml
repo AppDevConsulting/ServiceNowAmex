@@ -41,19 +41,19 @@ jobs:
           # Add your UAT test commands here
 
   deploy:
-    needs: uat
-    runs-on: ubuntu-latest
-    name: Deploy
-    steps:
-      - name: ServiceNow Change
-        uses: ServiceNow/servicenow-devops-change@v1.34.2
-        with:
-          devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
-          devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
-          instance-url: ${{ secrets.SN_INSTANCE_URL }}
-          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-          context-github: ${{ toJSON(github) }}
-          job-name: 'Deploy'
-          change-request: '{"setCloseCode":"true","attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
-          interval: '100'
-          timeout: '3600'
+  needs: uat
+  runs-on: ubuntu-latest
+  name: Deploy
+  steps:
+    - name: ServiceNow Change
+      uses: ServiceNow/servicenow-devops-change@v1.34.2
+      with:
+        devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+        devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+        instance-url: ${{ secrets.SN_INSTANCE_URL }}
+        tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+        context-github: ${{ toJSON(github) }}
+        job-name: 'Deploy'
+        change-request: '{"setCloseCode":"true","attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed","planned_start_date": "'$(date -u --date='now' +"%Y-%m-%d %H:%M:%S")'", "planned_end_date": "'$(date -u --date='now +24 hours' +"%Y-%m-%d %H:%M:%S")'", "cmdb_ci": "7ed2175bdbaa381062849806b991986", "u_mitigation_for_operational_impact": "Redirect traffic to another environment", "u_time_for_mitigation_to_complete": "15-30 minutes", "u_validation_type": "Technical and business validation"}}'
+        interval: '100'
+        timeout: 'change'
